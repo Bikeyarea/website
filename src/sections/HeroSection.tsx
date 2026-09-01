@@ -108,7 +108,7 @@ export function HeroSection({ onNavigate }: HeroSectionProps) {
         </h1>
         <p
           ref={subtitleRef}
-          className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-white/70 sm:text-xl md:text-2xl"
+          className="mx-auto mt-8 max-w-2xl text-base leading-relaxed text-white/70 sm:text-xl md:text-2xl"
         >
           在理性与感性的交界处，雕琢心智，连接圈层
           <br />

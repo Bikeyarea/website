@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react';
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
 import { Mail, MessageCircle, Phone } from 'lucide-react';
 
@@ -5,14 +6,40 @@ interface CTASectionProps {
   onNavigate?: (section: string) => void;
 }
 
+const WECHAT_ID = 'unique_byte';
+
 const contacts = [
   { icon: Mail, label: 'Email', value: 'Birkeyarea@163.com', href: 'mailto:Birkeyarea@163.com' },
-  { icon: MessageCircle, label: 'Wechat', value: 'Unique_byte', href: '#' },
+  { icon: MessageCircle, label: 'Wechat', value: WECHAT_ID, href: '#' },
   { icon: Phone, label: 'Phone', value: '86-18682593183', href: 'tel:8618682593183' },
 ];
 
 export function CTASection({ onNavigate }: CTASectionProps) {
   const sectionRef = useScrollAnimation<HTMLElement>({ threshold: 0.1 });
+  const [copied, setCopied] = useState(false);
+  const timerRef = useRef<number | undefined>(undefined);
+
+  const copyWechat = async () => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(WECHAT_ID);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = WECHAT_ID;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      setCopied(true);
+      window.clearTimeout(timerRef.current);
+      timerRef.current = window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* 复制失败静默处理 */
+    }
+  };
 
   return (
     <section
@@ -39,12 +66,21 @@ export function CTASection({ onNavigate }: CTASectionProps) {
         <div className="reveal-item mt-12 grid gap-4 sm:grid-cols-3">
           {contacts.map((contact) => {
             const Icon = contact.icon;
+            const cardClass =
+              'group flex flex-col items-center rounded-2xl border border-white/10 bg-white/5 p-6 text-white transition-all duration-300 hover:border-brand-accent/30 hover:bg-brand-accent/5';
+            if (contact.label === 'Wechat') {
+              return (
+                <button key={contact.label} type="button" onClick={copyWechat} className={cardClass}>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-accent/10 transition-colors group-hover:bg-brand-accent/20">
+                    <Icon className="h-5 w-5 text-brand-accent" />
+                  </div>
+                  <div className="mt-4 text-sm text-white/50">{contact.label}</div>
+                  <div className="mt-1 text-base font-medium text-white">{contact.value}</div>
+                </button>
+              );
+            }
             return (
-              <a
-                key={contact.label}
-                href={contact.href}
-                className="group flex flex-col items-center rounded-2xl border border-white/10 bg-white/5 p-6 text-white transition-all duration-300 hover:border-brand-accent/30 hover:bg-brand-accent/5"
-              >
+              <a key={contact.label} href={contact.href} className={cardClass}>
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-accent/10 transition-colors group-hover:bg-brand-accent/20">
                   <Icon className="h-5 w-5 text-brand-accent" />
                 </div>
@@ -62,6 +98,23 @@ export function CTASection({ onNavigate }: CTASectionProps) {
           >
             查看作品
           </button>
+        </div>
+      </div>
+
+      {/* 复制微信号提示（手机端点击微信卡片触发） */}
+      <div
+        className={`fixed bottom-10 left-1/2 z-50 -translate-x-1/2 transition-all duration-500 ${
+          copied ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-3 opacity-0'
+        }`}
+        aria-hidden={!copied}
+      >
+        <div
+          className="rounded-full p-[1px]"
+          style={{ background: 'linear-gradient(90deg, rgba(255,255,255,0.55), rgba(255,255,255,0.12))' }}
+        >
+          <div className="rounded-full bg-brand-dark/85 px-5 py-2.5 text-sm font-medium text-white backdrop-blur-md">
+            微信号已复制
+          </div>
         </div>
       </div>
     </section>

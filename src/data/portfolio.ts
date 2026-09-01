@@ -6,7 +6,6 @@ const rawProjects: Project[] = [
     id: 'uv-tect',
     title: 'UV-TECT新品发布会',
     subtitle: '负责品牌线上传播+线下会员拉新',
-    subtitleEn: 'Brand Online Communication & Offline Membership Growth',
     tags: ['品牌传播', '活动策划', '会员增长'],
     cover: '/uvtect-cover.jpg',
     color: '#ffffff',
