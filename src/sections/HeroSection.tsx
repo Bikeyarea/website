@@ -9,10 +9,10 @@ interface HeroSectionProps {
 }
 
 const slides = [
-  { src: asset('/hero-2.jpg'), alt: '熊泽江 - 城市' },
-  { src: asset('/hero-3.jpg'), alt: '熊泽江 - 公园' },
-  { src: asset('/hero-4.jpg'), alt: '熊泽江 - 水上' },
-  { src: asset('/hero-5.jpg'), alt: '熊泽江 - 日落' },
+  { src: asset('/hero-2.jpg'), alt: '熊泽江 - 城市', mobilePos: '75% 50%' },
+  { src: asset('/hero-3.jpg'), alt: '熊泽江 - 公园', mobilePos: '55% 50%' },
+  { src: asset('/hero-4.jpg'), alt: '熊泽江 - 水上', mobilePos: '80% 50%' },
+  { src: asset('/hero-5.jpg'), alt: '熊泽江 - 日落', mobilePos: '80% 40%' },
 ];
 
 export function HeroSection({ onNavigate }: HeroSectionProps) {
@@ -68,7 +68,7 @@ export function HeroSection({ onNavigate }: HeroSectionProps) {
             <img
               src={slide.src}
               alt={slide.alt}
-              className="h-full w-full object-cover scale-105 animate-pulse-glow"
+              className={`h-full w-full object-cover scale-105 object-[${slide.mobilePos.replace(' ', '_')}] sm:object-center`}
               style={{
                 transform: `translate(${(mouse.x - (containerRef.current?.offsetWidth || 0) / 2) / 50}px, ${(mouse.y - (containerRef.current?.offsetHeight || 0) / 2) / 50}px) scale(1.05)`,
                 transition: 'transform 0.3s ease-out, opacity 1s ease-in-out',
