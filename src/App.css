@@ -43,3 +43,16 @@ a:focus-visible {
     scroll-behavior: auto !important;
   }
 }
+
+/* 例外：首屏轮播的交叉淡入淡出。
+   它只改变透明度、不含任何位移，属于 reduced-motion 下建议保留的柔和效果
+   （该偏好主要针对会引发眩晕的位移动画）。
+   注意：iPhone 开启「低电量模式」时 iOS 会自动启用 Reduce Motion，
+   上面的全局规则会把这个 1s 过渡压成 0.01ms，导致手机端完全没有渐隐渐显。
+   这里用更高优先级的选择器（.hero-slide 特异性 > *，同为 !important 时特异性高者胜）恢复它。 */
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide {
+    transition-duration: 1s !important;
+    animation-duration: 1s !important;
+  }
+}

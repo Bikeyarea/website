@@ -67,7 +67,7 @@ export function HeroSection({ onNavigate }: HeroSectionProps) {
         {slides.map((slide, index) => (
           <div
             key={slide.src}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+            className={`hero-slide absolute inset-0 transition-opacity duration-1000 ease-in-out ${
               index === currentIndex ? 'opacity-100' : 'opacity-0'
             }`}
           >
