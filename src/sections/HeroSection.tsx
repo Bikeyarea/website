@@ -8,11 +8,14 @@ interface HeroSectionProps {
   onNavigate?: (section: string) => void;
 }
 
+// 注意：mobileClass 必须是「完整字面量」类名，不能用模板字符串拼接，
+// 否则 Tailwind 静态扫描不到，不会生成对应 CSS（上一版就是这个原因失效）。
+// 取值来自 OpenCV 人物检测（HOG 行人 + 显著性区域）在图中定位到的主体横坐标。
 const slides = [
-  { src: asset('/hero-2.jpg'), alt: '熊泽江 - 城市', mobilePos: '75% 50%' },
-  { src: asset('/hero-3.jpg'), alt: '熊泽江 - 公园', mobilePos: '55% 50%' },
-  { src: asset('/hero-4.jpg'), alt: '熊泽江 - 水上', mobilePos: '80% 50%' },
-  { src: asset('/hero-5.jpg'), alt: '熊泽江 - 日落', mobilePos: '80% 40%' },
+  { src: asset('/hero-2.jpg'), alt: '熊泽江 - 城市', mobileClass: 'object-[68%_50%]' },
+  { src: asset('/hero-3.jpg'), alt: '熊泽江 - 公园', mobileClass: 'object-[50%_50%]' },
+  { src: asset('/hero-4.jpg'), alt: '熊泽江 - 水上', mobileClass: 'object-[82%_50%]' },
+  { src: asset('/hero-5.jpg'), alt: '熊泽江 - 日落', mobileClass: 'object-[70%_50%]' },
 ];
 
 export function HeroSection({ onNavigate }: HeroSectionProps) {
@@ -39,12 +42,15 @@ export function HeroSection({ onNavigate }: HeroSectionProps) {
     return () => ctx.revert();
   }, []);
 
+  // 用依赖 currentIndex 的 setTimeout 取代 setInterval：
+  // 每次切换（自动或手动点箭头/指示点）都重新开始 5 秒倒计时，
+  // 否则手动切换后自动轮播会紧接着又跳走，看起来就像指示点没跟上。
   useEffect(() => {
-    const timer = setInterval(() => {
+    const timer = setTimeout(() => {
       setCurrentIndex((prev) => (prev + 1) % slides.length);
     }, 5000);
-    return () => clearInterval(timer);
-  }, []);
+    return () => clearTimeout(timer);
+  }, [currentIndex]);
 
   const goTo = (index: number) => setCurrentIndex(index);
   const prev = () => setCurrentIndex((prev) => (prev - 1 + slides.length) % slides.length);
@@ -68,7 +74,7 @@ export function HeroSection({ onNavigate }: HeroSectionProps) {
             <img
               src={slide.src}
               alt={slide.alt}
-              className={`h-full w-full object-cover scale-105 object-[${slide.mobilePos.replace(' ', '_')}] sm:object-center`}
+              className={`h-full w-full object-cover scale-105 ${slide.mobileClass} sm:object-center`}
               style={{
                 transform: `translate(${(mouse.x - (containerRef.current?.offsetWidth || 0) / 2) / 50}px, ${(mouse.y - (containerRef.current?.offsetHeight || 0) / 2) / 50}px) scale(1.05)`,
                 transition: 'transform 0.3s ease-out, opacity 1s ease-in-out',
