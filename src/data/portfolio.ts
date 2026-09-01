@@ -191,7 +191,7 @@ const rawProjects: Project[] = [
       {
         image: '/social-ext-4.jpg',
         title: '北京新店 | mont·bell 轻量户外生活美学一站体验',
-        subtitle: '产品方向-选题/文案/设计/SVG独立完成',
+        subtitle: '市场方向-选题/文案/设计/SVG独立完成',
         link: 'https://mp.weixin.qq.com/s/B1O4x0BeMpdrP3ZLgX9mlg',
       },
       {

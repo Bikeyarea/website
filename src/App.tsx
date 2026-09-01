@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './App.css';
@@ -22,12 +22,31 @@ gsap.registerPlugin(ScrollTrigger);
 function App() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [pageTransition, setPageTransition] = useState(false);
+  // 记住进入详情页前首页的滚动位置，返回时还原，避免被强制拉回顶部
+  const scrollRestoreRef = useRef(0);
+  const [restoreScroll, setRestoreScroll] = useState<number | null>(null);
 
   useEffect(() => {
     ScrollTrigger.refresh();
   }, [selectedProject]);
 
+  // 回到首页后恢复进入详情页前的位置。
+  // 用 useLayoutEffect 是因为它会在首页 DOM 更新完成、浏览器绘制之前同步执行，
+  // 此时设置滚动位置用户看不到跳动；若用 useEffect 则可能先绘制在顶部再跳走。
+  useLayoutEffect(() => {
+    if (selectedProject === null && restoreScroll !== null) {
+      window.scrollTo(0, restoreScroll);
+      setRestoreScroll(null);
+      // 首页内容较多，文档高度可能在首帧之后才稳定，下一帧再校正一次兜底
+      requestAnimationFrame(() => {
+        window.scrollTo(0, scrollRestoreRef.current);
+      });
+    }
+  }, [selectedProject, restoreScroll]);
+
   const handleProjectClick = useCallback((project: Project) => {
+    // 进入详情页前先记下当前位置
+    scrollRestoreRef.current = window.scrollY;
     setPageTransition(true);
     setTimeout(() => {
       window.scrollTo(0, 0);
@@ -40,6 +59,7 @@ function App() {
     setPageTransition(true);
     setTimeout(() => {
       setSelectedProject(null);
+      setRestoreScroll(scrollRestoreRef.current);
       setPageTransition(false);
     }, 300);
   }, []);

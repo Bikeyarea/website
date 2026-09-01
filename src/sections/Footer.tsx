@@ -13,7 +13,7 @@ export function Footer({ onNavigate }: FooterProps) {
             onClick={() => onNavigate?.('hero')}
             className="text-white transition-opacity hover:opacity-80"
           >
-            <span className="font-display text-lg font-bold">熊泽江个人作品集</span>
+            <span className="font-display text-lg font-bold">Birkey</span>
           </button>
 
           <nav className="flex flex-wrap items-center justify-center gap-6 text-sm text-white/50">

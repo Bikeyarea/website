@@ -48,7 +48,7 @@ export function GlobalHeader({ onNavigate, showNav = true }: GlobalHeaderProps) 
           onClick={() => handleNavClick('hero')}
           className="text-white transition-transform hover:scale-105"
         >
-          <span className="font-display text-xl font-bold tracking-tight">熊泽江个人作品集</span>
+          <span className="font-display text-xl font-bold tracking-tight">Birkey</span>
         </button>
 
         <nav className="hidden items-center gap-8 md:flex">
